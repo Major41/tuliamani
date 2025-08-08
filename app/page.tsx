@@ -284,7 +284,12 @@ export default function HomePage() {
             <div className="grid grid-cols-2 gap-4">
               <Card>
                 <CardContent className="p-4">
-                  <div className="w-full h-24 bg-muted rounded-md mb-3"></div>
+                  <Image
+                    src="homes.jpg"
+                    alt="Funeral Homes"
+                    width={24}
+                    height={24}
+                  />
                   <h4 className="font-semibold">
                     Peaceful Gardens Funeral Home
                   </h4>
@@ -295,7 +300,13 @@ export default function HomePage() {
               </Card>
               <Card>
                 <CardContent className="p-4">
-                  <div className="w-full h-24 bg-muted rounded-md mb-3"></div>
+                  {/* <div className="w-full h-24 bg-muted rounded-md mb-3"></div> */}
+                  <Image
+                    src="/11432032.png"
+                    alt="Flowers & Arrangements"
+                    width={24}
+                    height={24}
+                  />
                   <h4 className="font-semibold">Eternal Flowers</h4>
                   <p className="text-sm text-muted-foreground">
                     Sympathy arrangements
@@ -304,7 +315,12 @@ export default function HomePage() {
               </Card>
               <Card>
                 <CardContent className="p-4">
-                  <div className="w-full h-24 bg-muted rounded-md mb-3"></div>
+                  <Image
+                    src="/stream.jpg"
+                    alt="Live Streaming"
+                    width={24}
+                    height={24}
+                  />
                   <h4 className="font-semibold">Memorial Streaming</h4>
                   <p className="text-sm text-muted-foreground">
                     Live ceremony broadcasts
@@ -313,7 +329,12 @@ export default function HomePage() {
               </Card>
               <Card>
                 <CardContent className="p-4">
-                  <div className="w-full h-24 bg-muted rounded-md mb-3"></div>
+                  <Image
+                    src="/casket.jpeg"
+                    alt="Caskets & Urns"
+                    width={24}
+                    height={24}
+                  />
                   <h4 className="font-semibold">Heritage Caskets</h4>
                   <p className="text-sm text-muted-foreground">
                     Quality caskets & urns
