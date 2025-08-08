@@ -241,39 +241,19 @@ export default function HomePage() {
               </p>
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex items-center gap-2">
-                  <Image
-                    src="homes.jpg"
-                    alt="Funeral Homes"
-                    width={24}
-                    height={24}
-                  />
+                  <div className="w-2 h-2 bg-primary rounded-full"></div>
                   <span className="text-sm">Funeral Homes</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Image
-                    src="/casket.jpeg"
-                    alt="Caskets & Urns"
-                    width={24}
-                    height={24}
-                  />
+                  <div className="w-2 h-2 bg-primary rounded-full"></div>
                   <span className="text-sm">Caskets & Urns</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Image
-                    src="/11432032.png"
-                    alt="Flowers & Arrangements"
-                    width={24}
-                    height={24}
-                  />
+                  <div className="w-2 h-2 bg-primary rounded-full"></div>
                   <span className="text-sm">Flowers & Arrangements</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Image
-                    src="/stream.jpg"
-                    alt="Live Streaming"
-                    width={24}
-                    height={24}
-                  />
+                  <div className="w-2 h-2 bg-primary rounded-full"></div>
                   <span className="text-sm">Live Streaming</span>
                 </div>
               </div>
@@ -284,13 +264,15 @@ export default function HomePage() {
             <div className="grid grid-cols-2 gap-4">
               <Card>
                 <CardContent className="p-4">
-                  <Image
-                    src="homes.jpg"
-                    alt="Funeral Homes"
-                    width={24}
-                    height={24}
-                  />
-                  <h4 className="font-semibold">
+                  <div className="w-full h-32 relative">
+                    <Image
+                      src="/homes.jpg"
+                      alt="Funeral Homes"
+                      fill
+                      className="object-cover rounded-md"
+                    />
+                  </div>
+                  <h4 className="font-semibold mt-3">
                     Peaceful Gardens Funeral Home
                   </h4>
                   <p className="text-sm text-muted-foreground">
@@ -298,44 +280,52 @@ export default function HomePage() {
                   </p>
                 </CardContent>
               </Card>
+
               <Card>
                 <CardContent className="p-4">
-                  {/* <div className="w-full h-24 bg-muted rounded-md mb-3"></div> */}
-                  <Image
-                    src="/11432032.png"
-                    alt="Flowers & Arrangements"
-                    width={24}
-                    height={24}
-                  />
-                  <h4 className="font-semibold">Eternal Flowers</h4>
+                  <div className="w-full h-32 relative">
+                    <Image
+                      src="/11432032.png"
+                      alt="Flowers & Arrangements"
+                      fill
+                      className="object-cover rounded-md"
+                    />
+                  </div>
+                  <h4 className="font-semibold mt-3">Eternal Flowers</h4>
                   <p className="text-sm text-muted-foreground">
                     Sympathy arrangements
                   </p>
                 </CardContent>
               </Card>
+
               <Card>
                 <CardContent className="p-4">
-                  <Image
-                    src="/stream.jpg"
-                    alt="Live Streaming"
-                    width={24}
-                    height={24}
-                  />
-                  <h4 className="font-semibold">Memorial Streaming</h4>
+                  <div className="w-full h-32 relative">
+                    <Image
+                      src="/stream.jpg"
+                      alt="Live Streaming"
+                      fill
+                      className="object-cover rounded-md"
+                    />
+                  </div>
+                  <h4 className="font-semibold mt-3">Memorial Streaming</h4>
                   <p className="text-sm text-muted-foreground">
                     Live ceremony broadcasts
                   </p>
                 </CardContent>
               </Card>
+
               <Card>
                 <CardContent className="p-4">
-                  <Image
-                    src="/casket.jpeg"
-                    alt="Caskets & Urns"
-                    width={24}
-                    height={24}
-                  />
-                  <h4 className="font-semibold">Heritage Caskets</h4>
+                  <div className="w-full h-32 relative">
+                    <Image
+                      src="/casket.jpeg"
+                      alt="Caskets & Urns"
+                      fill
+                      className="object-cover rounded-md"
+                    />
+                  </div>
+                  <h4 className="font-semibold mt-3">Heritage Caskets</h4>
                   <p className="text-sm text-muted-foreground">
                     Quality caskets & urns
                   </p>
