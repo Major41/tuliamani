@@ -13,8 +13,8 @@ export async function POST(_: Request, { params }: { params: { id: string } }) {
   const tribute = await Tribute.findByIdAndUpdate(
     params.id,
     {
-      status: "approved",
-      publishedAt: new Date(),
+      status: "rejected",
+      rejectedAt: new Date(),
     },
     { new: true }
   );

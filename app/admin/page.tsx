@@ -1,10 +1,8 @@
-import { cookies } from "next/headers";
-import { requireRoleUser } from "@/lib/auth";
-import { getDb } from "@/lib/db";
-import Tribute from "@/models/tribute";
-import Service from "@/models/service";
-import LegacyOrder from "@/models/legacy-order";
-import User from "@/models/user";
+"use client";
+
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,7 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { StatusBadge } from "@/components/status-badge";
 import { AppSidebar } from "@/components/app-sidebar";
 import {
   SidebarInset,
@@ -28,56 +25,196 @@ import {
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
 import {
-  Heart,
   Users,
-  Building2,
+  Heart,
+  Settings,
   BookOpen,
+  MessageSquare,
+  FileText,
   TrendingUp,
+  TrendingDown,
   Clock,
-  DollarSign,
-  Shield,
+  CheckCircle,
+  AlertCircle,
+  UserPlus,
+  Activity,
 } from "lucide-react";
 
-async function approveTributeAction(id: string) {
-  "use server";
-  const { isAdmin } = await requireRoleUser(await cookies(), ["admin"]);
-  if (!isAdmin) throw new Error("Forbidden");
-  await getDb();
-  await Tribute.findByIdAndUpdate(id, {
-    status: "published",
-    publishedAt: new Date(),
-  });
-}
-
-async function markPaidAction(id: string, paid: boolean) {
-  "use server";
-  const { isAdmin } = await requireRoleUser(await cookies(), ["admin"]);
-  if (!isAdmin) throw new Error("Forbidden");
-  await getDb();
-  await Tribute.findByIdAndUpdate(id, { paid });
-}
-
-export default async function AdminPage() {
-  const { user, isAdmin } = await requireRoleUser(await cookies(), ["admin"]);
-  if (!isAdmin) return <main className="p-6">Forbidden</main>;
-
-  await getDb();
-  const [tributes, services, orders, users] = await Promise.all([
-    Tribute.find({}).sort({ createdAt: -1 }).limit(50).lean(),
-    Service.find({}).sort({ createdAt: -1 }).limit(20).lean(),
-    LegacyOrder.find({}).sort({ createdAt: -1 }).limit(20).lean(),
-    User.find({}).sort({ createdAt: -1 }).limit(10).lean(),
-  ]);
-
-  const stats = {
-    totalTributes: tributes.length,
-    pendingTributes: tributes.filter((t) => t.status === "pending").length,
-    totalUsers: users.length,
-    totalServices: services.length,
-    pendingServices: services.filter((s) => s.status === "pending").length,
-    totalOrders: orders.length,
-    pendingOrders: orders.filter((o) => o.status === "pending").length,
+interface DashboardData {
+  statistics: {
+    tributes: {
+      total: number;
+      pending: number;
+      approved: number;
+      recent: number;
+      growth: string;
+    };
+    users: {
+      total: number;
+      recent: number;
+      growth: string;
+    };
+    services: {
+      total: number;
+      pending: number;
+      approved: number;
+      recent: number;
+    };
+    orders: {
+      total: number;
+      pending: number;
+      completed: number;
+      recent: number;
+    };
+    blog: {
+      total: number;
+      published: number;
+      draft: number;
+      recent: number;
+    };
   };
+  recentActivity: {
+    tributes: Array<{
+      _id: string;
+      authorName: string;
+      message: string;
+      createdAt: string;
+      obituaryId: { name: string };
+    }>;
+    users: Array<{
+      _id: string;
+      name: string;
+      email: string;
+      createdAt: string;
+      role: string;
+    }>;
+    services: Array<{
+      _id: string;
+      businessName: string;
+      category: string;
+      status: string;
+      createdAt: string;
+      submittedBy: { name: string; email: string };
+    }>;
+    orders: Array<{
+      _id: string;
+      deceasedName: string;
+      packageType: string;
+      status: string;
+      createdAt: string;
+      customerEmail: string;
+    }>;
+  };
+}
+
+export default function AdminDashboard() {
+  const [user, setUser] = useState<any>(null);
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(
+    null
+  );
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    checkAuthAndFetchData();
+  }, []);
+
+  const checkAuthAndFetchData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Check authentication first
+      const userRes = await fetch("/api/auth/me");
+      const userData = await userRes.json();
+
+      setAuthChecked(true);
+
+      // If no user or not admin, redirect to login
+      if (!userData.user) {
+        router.push("/login");
+        return;
+      }
+
+      if (userData.user.role !== "admin") {
+        setError("You don't have admin privileges");
+        return;
+      }
+
+      setUser(userData.user);
+
+      // Fetch dashboard data
+      const dashboardRes = await fetch("/api/admin/dashboard");
+      console.log(dashboardRes);
+
+      if (!dashboardRes.ok) {
+        if (dashboardRes.status === 403) {
+          setError("Access denied. Admin privileges required.");
+          return;
+        }
+        throw new Error("Failed to fetch dashboard data");
+      }
+
+      const data = await dashboardRes.json();
+      setDashboardData(data);
+    } catch (error) {
+      console.error("Failed to fetch dashboard data:", error);
+      setError("Failed to load dashboard data. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Show loading while checking auth
+  if (!authChecked || loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p>Loading admin dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold mb-2">Error</h2>
+          <p className="text-muted-foreground mb-4">{error}</p>
+          <div className="space-x-2">
+            <Button onClick={checkAuthAndFetchData}>Try Again</Button>
+            <Button variant="outline" onClick={() => router.push("/login")}>
+              Go to Login
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // If no user after auth check, don't render anything (redirect will happen)
+  if (!user) {
+    return null;
+  }
+
+  if (!dashboardData) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p>Loading dashboard data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const { statistics, recentActivity } = dashboardData;
 
   return (
     <SidebarProvider>
@@ -98,32 +235,19 @@ export default async function AdminPage() {
         <main className="flex-1 space-y-8 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold flex items-center gap-2">
-                <Shield className="w-8 h-8 text-primary" />
-                Admin Dashboard
-              </h1>
+              <h1 className="text-3xl font-bold">Admin Dashboard</h1>
               <p className="text-muted-foreground">
-                Manage tributes, users, and platform operations
+                Manage and monitor the Tuliamani platform
               </p>
             </div>
+            <Button onClick={checkAuthAndFetchData} variant="outline">
+              <Activity className="w-4 h-4 mr-2" />
+              Refresh Data
+            </Button>
           </div>
 
-          {/* Stats Cards */}
+          {/* Main Statistics Cards */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Total Tributes
-                </CardTitle>
-                <Heart className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.totalTributes}</div>
-                <p className="text-xs text-muted-foreground">
-                  {stats.pendingTributes} pending approval
-                </p>
-              </CardContent>
-            </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
@@ -132,24 +256,57 @@ export default async function AdminPage() {
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.totalUsers}</div>
-                <p className="text-xs text-muted-foreground">
-                  Registered users
+                <div className="text-2xl font-bold">
+                  {statistics.users.total}
+                </div>
+                <p className="text-xs text-muted-foreground flex items-center">
+                  {Number.parseFloat(statistics.users.growth) > 0 ? (
+                    <TrendingUp className="w-3 h-3 mr-1 text-green-500" />
+                  ) : (
+                    <TrendingDown className="w-3 h-3 mr-1 text-red-500" />
+                  )}
+                  {statistics.users.growth}% from last week
                 </p>
               </CardContent>
             </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Total Obituaries
+                </CardTitle>
+                <Heart className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {statistics.tributes.total}
+                </div>
+                <p className="text-xs text-muted-foreground flex items-center">
+                  {Number.parseFloat(statistics.tributes.growth) > 0 ? (
+                    <TrendingUp className="w-3 h-3 mr-1 text-green-500" />
+                  ) : (
+                    <TrendingDown className="w-3 h-3 mr-1 text-red-500" />
+                  )}
+                  {statistics.tributes.growth}% from last week
+                </p>
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Services</CardTitle>
-                <Building2 className="h-4 w-4 text-muted-foreground" />
+                <Settings className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.totalServices}</div>
+                <div className="text-2xl font-bold">
+                  {statistics.services.total}
+                </div>
                 <p className="text-xs text-muted-foreground">
-                  {stats.pendingServices} pending approval
+                  {statistics.services.pending} pending approval
                 </p>
               </CardContent>
             </Card>
+
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
@@ -158,175 +315,290 @@ export default async function AdminPage() {
                 <BookOpen className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.totalOrders}</div>
+                <div className="text-2xl font-bold">
+                  {statistics.orders.total}
+                </div>
                 <p className="text-xs text-muted-foreground">
-                  {stats.pendingOrders} pending
+                  {statistics.orders.pending} pending
                 </p>
               </CardContent>
             </Card>
           </div>
 
-          {/* Recent Tributes */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Recent Tributes</CardTitle>
-              <CardDescription>
-                Latest tribute submissions requiring review
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left p-3 font-medium">Name</th>
-                      <th className="text-left p-3 font-medium">User</th>
-                      <th className="text-left p-3 font-medium">Status</th>
-                      <th className="text-left p-3 font-medium">Paid</th>
-                      <th className="text-left p-3 font-medium">Mpesa</th>
-                      <th className="text-left p-3 font-medium">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tributes.slice(0, 10).map((t: any) => (
-                      <tr key={t._id} className="border-b hover:bg-muted/50">
-                        <td className="p-3 font-medium">{t.name}</td>
-                        <td className="p-3 text-muted-foreground truncate max-w-32">
-                          {String(t.userId)}
-                        </td>
-                        <td className="p-3">
-                          <StatusBadge status={t.status} />
-                        </td>
-                        <td className="p-3">
-                          <span
-                            className={`text-xs px-2 py-1 rounded-full ${
-                              t.paid
-                                ? "bg-green-100 text-green-800"
-                                : "bg-red-100 text-red-800"
-                            }`}
-                          >
-                            {t.paid ? "Paid" : "Unpaid"}
-                          </span>
-                        </td>
-                        <td className="p-3 text-muted-foreground">
-                          {t.mpesaCode || "-"}
-                        </td>
-                        <td className="p-3">
-                          <div className="flex gap-2">
-                            <form
-                              action={approveTributeAction.bind(
-                                null,
-                                String(t._id)
-                              )}
-                            >
-                              <Button size="sm" variant="outline">
-                                Approve
-                              </Button>
-                            </form>
-                            <form
-                              action={markPaidAction.bind(
-                                null,
-                                String(t._id),
-                                !t.paid
-                              )}
-                            >
-                              <Button size="sm" variant="outline">
-                                {t.paid ? "Mark Unpaid" : "Mark Paid"}
-                              </Button>
-                            </form>
+          {/* Detailed Statistics */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MessageSquare className="w-5 h-5" />
+                  Obituary Status
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-yellow-500" />
+                    <span className="text-sm">Pending</span>
+                  </div>
+                  <span className="font-semibold">
+                    {statistics.tributes.pending}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span className="text-sm">Approved</span>
+                  </div>
+                  <span className="font-semibold">
+                    {statistics.tributes.approved}
+                  </span>
+                </div>
+                <div className="pt-2">
+                  <Link href="/admin/tributes">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full bg-transparent"
+                    >
+                      Manage Tributes
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Settings className="w-5 h-5" />
+                  Service Providers
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-yellow-500" />
+                    <span className="text-sm">Pending</span>
+                  </div>
+                  <span className="font-semibold">
+                    {statistics.services.pending}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span className="text-sm">Approved</span>
+                  </div>
+                  <span className="font-semibold">
+                    {statistics.services.approved}
+                  </span>
+                </div>
+                <div className="pt-2">
+                  <Link href="/admin/services">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full bg-transparent"
+                    >
+                      Manage Services
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="w-5 h-5" />
+                  Blog Posts
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span className="text-sm">Published</span>
+                  </div>
+                  <span className="font-semibold">
+                    {statistics.blog.published}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-yellow-500" />
+                    <span className="text-sm">Drafts</span>
+                  </div>
+                  <span className="font-semibold">{statistics.blog.draft}</span>
+                </div>
+                <div className="pt-2">
+                  <Link href="/admin/blog">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full bg-transparent"
+                    >
+                      Manage Blog
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Recent Activity */}
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <UserPlus className="w-5 h-5" />
+                  Recent Users
+                </CardTitle>
+                <CardDescription>
+                  New user registrations this week
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {recentActivity.users.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">
+                    No new users this week
+                  </p>
+                ) : (
+                  <div className="space-y-3">
+                    {recentActivity.users.map((user) => (
+                      <div
+                        key={user._id}
+                        className="flex items-center gap-3 p-2 rounded-lg bg-muted/30"
+                      >
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Users className="w-4 h-4 text-primary" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-sm">{user.name}</div>
+                          <div className="text-xs text-muted-foreground truncate">
+                            {user.email}
                           </div>
-                        </td>
-                      </tr>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {new Date(user.createdAt).toLocaleDateString()}
+                        </div>
+                      </div>
                     ))}
-                    {tributes.length === 0 && (
-                      <tr>
-                        <td
-                          className="p-6 text-center text-muted-foreground"
-                          colSpan={6}
-                        >
-                          No tributes found
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Services and Orders */}
-          <div className="grid lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Building2 className="w-5 h-5" />
-                  Funeral Services
-                </CardTitle>
-                <CardDescription>Recent service submissions</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {services.slice(0, 5).map((s: any) => (
-                    <div
-                      key={s._id}
-                      className="flex items-center justify-between p-3 border rounded-lg"
-                    >
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium truncate">
-                          {s.businessName}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          {s.category}
-                        </div>
-                      </div>
-                      <StatusBadge status={s.status} />
-                    </div>
-                  ))}
-                  {services.length === 0 && (
-                    <div className="text-center py-6 text-muted-foreground">
-                      No service submissions
-                    </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <BookOpen className="w-5 h-5" />
-                  Legacy Book Orders
+                  <MessageSquare className="w-5 h-5" />
+                  Recent Tributes
                 </CardTitle>
-                <CardDescription>Recent book orders</CardDescription>
+                <CardDescription>Latest tribute messages</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  {orders.slice(0, 5).map((o: any) => (
-                    <div
-                      key={o._id}
-                      className="flex items-center justify-between p-3 border rounded-lg"
-                    >
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium truncate">
-                          {o.deceasedName}
+                {recentActivity.tributes.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">
+                    No recent tributes
+                  </p>
+                ) : (
+                  <div className="space-y-3">
+                    {recentActivity.tributes.map((tribute) => (
+                      <div
+                        key={tribute._id}
+                        className="flex items-start gap-3 p-2 rounded-lg bg-muted/30"
+                      >
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Heart className="w-4 h-4 text-primary" />
                         </div>
-                        <div className="text-sm text-muted-foreground">
-                          {o.packageType === "design"
-                            ? "Design Only"
-                            : "Full Curation"}
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-sm">
+                            {tribute.authorName}
+                          </div>
+                          <div className="text-xs text-muted-foreground mb-1">
+                            For: {tribute.obituaryId?.name}
+                          </div>
+                          <div className="text-xs text-muted-foreground line-clamp-2">
+                            {tribute.message?.substring(0, 80)}...
+                          </div>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {new Date(tribute.createdAt).toLocaleDateString()}
                         </div>
                       </div>
-                      <StatusBadge status={o.status} />
-                    </div>
-                  ))}
-                  {orders.length === 0 && (
-                    <div className="text-center py-6 text-muted-foreground">
-                      No legacy book orders
-                    </div>
-                  )}
-                </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Link href="/admin/obituaries">
+              <Card className="hover:shadow-md transition-shadow cursor-pointer">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Heart className="w-5 h-5 text-primary" />
+                    Manage Obituaries
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    Review and manage all obituaries
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/admin/users">
+              <Card className="hover:shadow-md transition-shadow cursor-pointer">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Users className="w-5 h-5 text-primary" />
+                    User Management
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    View and manage user accounts
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/admin/services">
+              <Card className="hover:shadow-md transition-shadow cursor-pointer">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Settings className="w-5 h-5 text-primary" />
+                    Service Providers
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    Approve and manage services
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/admin/legacy-orders">
+              <Card className="hover:shadow-md transition-shadow cursor-pointer">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <BookOpen className="w-5 h-5 text-primary" />
+                    Legacy Orders
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    Process legacy book orders
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
           </div>
         </main>
       </SidebarInset>

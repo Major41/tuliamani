@@ -44,9 +44,7 @@ export async function GET(req: Request) {
     const stats = {
       total: await Tribute.countDocuments(),
       pending: await Tribute.countDocuments({ status: "pending" }),
-      approved: await Tribute.countDocuments({ status: "approved" }),
-      published: await Tribute.countDocuments({ status: "published" }),
-      rejected: await Tribute.countDocuments({ status: "rejected" }),
+      published: await Tribute.countDocuments({ status: "approved" }),
       draft: await Tribute.countDocuments({ status: "draft" }),
       paid: await Tribute.countDocuments({ paid: true }),
       unpaid: await Tribute.countDocuments({ paid: false }),

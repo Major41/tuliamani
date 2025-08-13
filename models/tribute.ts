@@ -17,7 +17,7 @@ export interface ITribute extends Document {
   contributor?: { name?: string; phone?: string; email?: string }
   mpesaCode?: string
   allowPublicTributes: boolean
-  status: "pending" | "approved" | "published" | "memorialized" | "archived"
+  status: "pending" | "approved" | "published" | "memorialized" | "archived" | "rejected"
   paid: boolean
   appreciationMessage?: string
   publishedAt?: Date
