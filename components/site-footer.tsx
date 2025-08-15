@@ -1,4 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
+import { Mail, Phone } from "lucide-react";
 
 export function SiteFooter() {
   return (
@@ -6,8 +8,15 @@ export function SiteFooter() {
       <div className="mx-auto max-w-7xl px-4 py-12">
         <div className="grid md:grid-cols-4 gap-8">
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Tuliamani</h3>
-            <p className="text-sm text-muted-foreground">
+            <Link href="/" className="text-2xl font-bold text-primary mb-4">
+              <Image
+                src="/logo.avif"
+                alt="Tuliamani Logo"
+                width={100}
+                height={50}
+              />
+            </Link>
+            <p className="text-sm text-muted-foreground mt-4">
               Preserving memories and honoring lives with dignity and care.
             </p>
           </div>
@@ -31,25 +40,28 @@ export function SiteFooter() {
               <Link href="/about" className="block hover:text-primary">
                 About
               </Link>
-              <Link href="/contact" className="block hover:text-primary">
-                Contact
-              </Link>
-              <Link href="/privacy" className="block hover:text-primary">
-                Privacy
-              </Link>
             </div>
           </div>
           <div className="space-y-4">
-            <h4 className="font-medium">Support</h4>
-            <div className="space-y-2 text-sm">
-              <Link href="/help" className="block hover:text-primary">
-                Help Center
-              </Link>
-              <Link href="/guides" className="block hover:text-primary">
-                Guides
-              </Link>
-              <Link href="/contact" className="block hover:text-primary">
-                Contact Support
+            <h4 className="font-medium">Contact</h4>
+            <div className="space-y-3 text-sm">
+              <div className="flex items-center gap-2">
+                <Phone className="h-4 w-4" />
+                <a href="tel:+1234567890" className="hover:text-primary">
+                  +254 722 634269
+                </a>
+              </div>
+              <div className="flex items-center gap-2">
+                <Mail className="h-4 w-4" />
+                <a
+                  href="mailto:info@tuliamani.com"
+                  className="hover:text-primary"
+                >
+                  placeholder@gmail.com
+                </a>
+              </div>
+              <Link href="/contact" className="block hover:text-primary pt-2">
+                Contact Form
               </Link>
             </div>
           </div>

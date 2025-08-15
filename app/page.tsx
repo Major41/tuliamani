@@ -17,6 +17,9 @@ import {
   Camera,
   MessageCircle,
   Download,
+  Archive,
+  Megaphone,
+  Images,
 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -27,7 +30,7 @@ export default function HomePage() {
     <main className="min-h-svh flex flex-col">
       <SiteHeader />
       {/* Hero Section */}
-      <section className="relative py-20 lg:py-32 bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+      <section className="relative py-8 lg:py-8 bg-gradient-to-br from-primary/5 via-background to-secondary/5">
         <div className="mx-auto max-w-7xl px-4">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
@@ -62,33 +65,13 @@ export default function HomePage() {
                   </Button>
                 </Link>
               </div>
-              <div className="flex items-center gap-8 pt-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold">500+</div>
-                  <div className="text-sm text-muted-foreground">
-                    Memorials Created
-                  </div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold">10K+</div>
-                  <div className="text-sm text-muted-foreground">
-                    Tributes Shared
-                  </div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold">99%</div>
-                  <div className="text-sm text-muted-foreground">
-                    Satisfaction Rate
-                  </div>
-                </div>
-              </div>
             </div>
             <div className="relative">
-              <div className="aspect-square rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 p-8">
+              <div className="aspect-square rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20">
                 <img
                   alt="Memorial showcase"
-                  className="w-full h-full object-cover rounded-xl shadow-2xl"
-                  src="/hero.jpg?height=600&width=600"
+                  className="w-full h-full object-cover rounded-xl"
+                  src="/hero.jpg?height=500&width=800"
                 />
               </div>
               <div className="absolute -bottom-6 -left-6 bg-background border rounded-xl p-4 shadow-lg">
@@ -125,14 +108,14 @@ export default function HomePage() {
             <Card className="border-0 shadow-md hover:shadow-lg transition-shadow">
               <CardHeader className="text-center pb-4">
                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Camera className="w-6 h-6 text-primary" />
+                  <Megaphone className="w-6 h-6 text-primary" />
                 </div>
-                <CardTitle className="text-lg">Photo Galleries</CardTitle>
+                <CardTitle className="text-lg">Announcement</CardTitle>
               </CardHeader>
               <CardContent className="text-center">
                 <CardDescription>
-                  Upload and organize cherished photos to create beautiful
-                  visual tributes.
+                  Share important announcements and updates with family and
+                  friends.
                 </CardDescription>
               </CardContent>
             </Card>
@@ -165,14 +148,14 @@ export default function HomePage() {
             <Card className="border-0 shadow-md hover:shadow-lg transition-shadow">
               <CardHeader className="text-center pb-4">
                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Shield className="w-6 h-6 text-primary" />
+                  <Images className="w-6 h-6 text-primary" />
                 </div>
-                <CardTitle className="text-lg">Secure & Private</CardTitle>
+                <CardTitle className="text-lg">Annual Memories</CardTitle>
               </CardHeader>
               <CardContent className="text-center">
                 <CardDescription>
-                  Your memories are safe with enterprise-grade security and
-                  privacy controls.
+                  Create a space for annual memories and reflections to honor
+                  your loved ones.
                 </CardDescription>
               </CardContent>
             </Card>
@@ -347,7 +330,7 @@ export default function HomePage() {
             ones and preserve their legacies.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/signup">
+            <Link href="/services">
               <Button
                 size="lg"
                 variant="secondary"
@@ -360,7 +343,7 @@ export default function HomePage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="w-full sm:w-auto border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary"
+                className="w-full sm:w-auto border-primary-foreground text-gray-900 hover:bg-primary-foreground hover:text-primary"
               >
                 Learn More About Us
               </Button>
