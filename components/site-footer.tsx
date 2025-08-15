@@ -60,9 +60,7 @@ export function SiteFooter() {
                   placeholder@gmail.com
                 </a>
               </div>
-              <Link href="/contact" className="block hover:text-primary pt-2">
-                Contact Form
-              </Link>
+             
             </div>
           </div>
         </div>
