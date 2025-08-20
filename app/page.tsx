@@ -249,7 +249,7 @@ export default function HomePage() {
                 <CardContent className="p-4">
                   <div className="w-full h-32 relative">
                     <Image
-                      src="/homes.jpg"
+                      src="/placeholder.jpg"
                       alt="Funeral Homes"
                       fill
                       className="object-cover rounded-md"
@@ -268,7 +268,7 @@ export default function HomePage() {
                 <CardContent className="p-4">
                   <div className="w-full h-32 relative">
                     <Image
-                      src="/11432032.png"
+                      src="/placeholder.jpg"
                       alt="Flowers & Arrangements"
                       fill
                       className="object-cover rounded-md"
@@ -285,7 +285,7 @@ export default function HomePage() {
                 <CardContent className="p-4">
                   <div className="w-full h-32 relative">
                     <Image
-                      src="/stream.jpg"
+                      src="/placeholder.jpg"
                       alt="Live Streaming"
                       fill
                       className="object-cover rounded-md"
@@ -302,7 +302,7 @@ export default function HomePage() {
                 <CardContent className="p-4">
                   <div className="w-full h-32 relative">
                     <Image
-                      src="/casket.jpeg"
+                      src="/placeholder.jpg"
                       alt="Caskets & Urns"
                       fill
                       className="object-cover rounded-md"

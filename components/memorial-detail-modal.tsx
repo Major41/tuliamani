@@ -222,7 +222,7 @@ export function MemorialDetailModal({ memorial, isOpen, onClose }: MemorialDetai
               className={
                 activeTab === "tribute"
                   ? "bg-white text-black hover:bg-gray-200"
-                  : "border-gray-600 text-gray-200 hover:bg-gray-800"
+                  : "border-gray-600 text-black hover:bg-gray-800"
               }
             >
               <Heart className="h-4 w-4 mr-2" />

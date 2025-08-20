@@ -325,7 +325,7 @@ export default function MemorialsPage() {
                           size="sm"
                           variant="outline"
                           onClick={() => setSelectedMemorial(memorial)}
-                          className="flex-1 border-gray-600 text-gray-200 hover:bg-gray-800 hover:text-white"
+                          className="flex-1 border-gray-600 text-black hover:bg-gray-800 hover:text-white"
                         >
                           <Eye className="h-4 w-4 mr-2" />
                           View Details
