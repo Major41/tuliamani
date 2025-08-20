@@ -1,135 +1,238 @@
-"use client";
-
-import { useState } from "react";
+import { cookies } from "next/headers";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { requireAuthUser } from "@/lib/auth";
+import { getDb } from "@/lib/db";
+import LegacyOrder from "@/models/legacy-order";
+import { StatusBadge } from "@/components/status-badge";
+import { Separator } from "@/components/ui/separator";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import {
+  BookOpen,
+  Plus,
+  Download,
+  Clock,
+  CheckCircle,
+  Package,
+} from "lucide-react";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
-export default function LegacyBookPage() {
-  const [pkg, setPkg] = useState<"design" | "full">("design");
-  const [deceasedName, setDeceasedName] = useState("");
-  const [requesterName, setRequesterName] = useState("");
-  const [contact, setContact] = useState("");
-  const [description, setDescription] = useState("");
-  const [deadline, setDeadline] = useState("");
-  const [mpesaCode, setMpesaCode] = useState("");
-  const [saving, setSaving] = useState(false);
-
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setSaving(true);
-    try {
-      const res = await fetch("/api/legacy-orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          packageType: pkg,
-          deceasedName,
-          requesterName,
-          contact,
-          description,
-          deadline,
-          mpesaCode,
-        }),
-      });
-      if (!res.ok) throw new Error(await res.text());
-      window.location.href = "/dashboard";
-    } catch (e: any) {
-      alert(e.message);
-    } finally {
-      setSaving(false);
-    }
-  }
+export default async function UserLegacyBooksPage() {
+  const cookieStore = await cookies();
+  const user = await requireAuthUser(cookieStore);
+  await getDb();
+  const orders = await LegacyOrder.find({ userId: user._id })
+    .sort({ createdAt: -1 })
+    .lean();
 
   return (
     <>
-      <SiteHeader />
-      <main className="mx-auto max-w-2xl px-4 py-8">
-        <h1 className="text-2xl font-semibold">Order a Legacy Book</h1>
-        <p className="text-sm text-muted-foreground">
-          Choose a package and tell us your needs.
-        </p>
-        <form onSubmit={onSubmit} className="space-y-4 mt-6">
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              onClick={() => setPkg("design")}
-              className={`rounded-md border p-4 text-left ${
-                pkg === "design" ? "bg-muted" : ""
-              }`}
-            >
-              <div className="font-medium">KES 50,000</div>
-              <div className="text-sm text-muted-foreground">Design Only</div>
-            </button>
-            <button
-              type="button"
-              onClick={() => setPkg("full")}
-              className={`rounded-md border p-4 text-left ${
-                pkg === "full" ? "bg-muted" : ""
-              }`}
-            >
-              <div className="font-medium">KES 100,000</div>
-              <div className="text-sm text-muted-foreground">Full Curation</div>
-            </button>
-          </div>
+      <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+        <SidebarTrigger className="-ml-1" />
+        <Separator orientation="vertical" className="mr-2 h-4" />
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Legacy Books</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </header>
+
+      <main className="flex-1 space-y-6 p-6">
+        <div className="flex items-center justify-between">
           <div>
-            <label className="text-sm">Name of Deceased</label>
-            <Input
-              value={deceasedName}
-              onChange={(e) => setDeceasedName(e.target.value)}
-              required
-            />
+            <h1 className="text-3xl font-bold">Legacy Books</h1>
+            <p className="text-muted-foreground">
+              Order and manage your legacy book projects
+            </p>
           </div>
-          <div className="grid sm:grid-cols-2 gap-4">
+          <Link href="/legacy-book">
+            <Button>
+              <Plus className="w-4 h-4 mr-2" />
+              Order New Book
+            </Button>
+          </Link>
+        </div>
+
+        {/* Stats Overview */}
+        <div className="grid gap-4 md:grid-cols-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Total Orders
+              </CardTitle>
+              <BookOpen className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{orders.length}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Pending</CardTitle>
+              <Clock className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {orders.filter((o) => o.status === "pending").length}
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">In Progress</CardTitle>
+              <Package className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {orders.filter((o) => o.status === "assigned").length}
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Completed</CardTitle>
+              <CheckCircle className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {orders.filter((o) => o.status === "completed").length}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Orders List */}
+        {orders.length === 0 ? (
+          <Card>
+            <CardContent className="flex flex-col items-center justify-center py-16">
+              <BookOpen className="w-16 h-16 text-muted-foreground mb-4" />
+              <h3 className="text-xl font-semibold mb-2">
+                No legacy books ordered yet
+              </h3>
+              <p className="text-muted-foreground text-center mb-6 max-w-md">
+                Create beautiful printed books to preserve memories forever.
+                Choose from design-only or full curation packages.
+              </p>
+              <Link href="/legacy-book">
+                <Button size="lg">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Order Your First Book
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-4">
+            {orders.map((order: any) => (
+              <Card
+                key={order._id}
+                className="hover:shadow-md transition-shadow"
+              >
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1 space-y-3">
+                      <div className="flex items-center gap-3">
+                        <BookOpen className="w-5 h-5 text-primary" />
+                        <div>
+                          <h3 className="font-semibold text-lg">
+                            {order.deceasedName}
+                          </h3>
+                          <p className="text-sm text-muted-foreground">
+                            Requested by {order.requesterName}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="grid md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="font-medium">Package:</span>{" "}
+                          <span className="capitalize">
+                            {order.packageType === "design"
+                              ? "Design Only (KES 50,000)"
+                              : "Full Curation (KES 100,000)"}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="font-medium">Contact:</span>{" "}
+                          {order.contact}
+                        </div>
+                        {order.deadline && (
+                          <div>
+                            <span className="font-medium">Deadline:</span>{" "}
+                            {new Date(order.deadline).toLocaleDateString()}
+                          </div>
+                        )}
+                        <div>
+                          <span className="font-medium">Ordered:</span>{" "}
+                          {new Date(order.createdAt).toLocaleDateString()}
+                        </div>
+                      </div>
+
+                      {order.description && (
+                        <div>
+                          <span className="font-medium text-sm">
+                            Description:
+                          </span>
+                          <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">
+                            {order.description}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col items-end gap-3">
+                      <StatusBadge status={order.status} />
+                      {order.status === "completed" && order.zipBook && (
+                        <Link href={order.zipBook.url} target="_blank">
+                          <Button size="sm" variant="outline">
+                            <Download className="w-3 h-3 mr-1" />
+                            Download
+                          </Button>
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {/* Information Card */}
+        <Card className="bg-muted/30">
+          <CardHeader>
+            <CardTitle className="text-lg">About Legacy Books</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm">
             <div>
-              <label className="text-sm">Requester Name</label>
-              <Input
-                value={requesterName}
-                onChange={(e) => setRequesterName(e.target.value)}
-                required
-              />
+              <strong>Design Only Package (KES 50,000):</strong> We create a
+              beautiful book design using the content you provide.
             </div>
             <div>
-              <label className="text-sm">Contact (phone/email)</label>
-              <Input
-                value={contact}
-                onChange={(e) => setContact(e.target.value)}
-                required
-              />
+              <strong>Full Curation Package (KES 100,000):</strong> We handle
+              everything - content curation, interviews, writing, and design.
             </div>
-          </div>
-          <div>
-            <label className="text-sm">Description</label>
-            <Textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={4}
-            />
-          </div>
-          <div>
-            <label className="text-sm">Deadline</label>
-            <Input
-              type="date"
-              value={deadline}
-              onChange={(e) => setDeadline(e.target.value)}
-            />
-          </div>
-          <div>
-            <label className="text-sm">Mpesa Code</label>
-            <Input
-              value={mpesaCode}
-              onChange={(e) => setMpesaCode(e.target.value)}
-              required
-            />
-          </div>
-          <Button disabled={saving}>
-            {saving ? "Placing..." : "Place Order"}
-          </Button>
-        </form>
+            <div className="text-muted-foreground">
+              All books are professionally printed and bound. Delivery takes 2-4
+              weeks after completion.
+            </div>
+          </CardContent>
+        </Card>
       </main>
-      <SiteFooter />
     </>
   );
 }

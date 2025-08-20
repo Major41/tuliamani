@@ -1,13 +1,16 @@
-import { NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
+import { getDb } from "@/lib/db";
 import { cookies } from "next/headers";
 import { getUserFromCookies } from "@/lib/auth";
-import { getDb } from "@/lib/db";
 import Tribute from "@/models/tribute";
-import Comment from "@/models/comment";
 import LegacyOrder from "@/models/legacy-order";
+import Comment from "@/models/comment";
+import { ObjectId } from "mongodb";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    await getDb();
+
     const cookieStore = await cookies();
     const user = await getUserFromCookies(cookieStore);
 
@@ -15,64 +18,137 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    await getDb();
+    console.log("Dashboard API - User:", user);
+    const userId = new ObjectId(user._id);
 
-    // Get user's obituaries
-    const obituaries = await Tribute.find({ userId: user._id })
+    // Get current date for recent calculations
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    // First, let's check what obituaries exist for this user
+    const allUserObituaries = await Tribute.find({ userId: userId }).lean();
+    console.log("All user obituaries:", allUserObituaries.length);
+    console.log("Sample obituary:", allUserObituaries[0]);
+
+    // Fetch obituaries statistics with proper ObjectId matching
+    const obituariesStats = await Tribute.aggregate([
+      { $match: { userId: userId } },
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    console.log("Obituaries stats from aggregation:", obituariesStats);
+
+    // Convert to object for easier access
+    const obituaryStatusCounts = obituariesStats.reduce((acc, item) => {
+      acc[item._id] = item.count;
+      return acc;
+    }, {} as Record<string, number>);
+
+    // Calculate totals
+    const totalObituaries = obituariesStats.reduce(
+      (sum, item) => sum + item.count,
+      0
+    );
+    const publishedObituaries = obituaryStatusCounts.published || 0;
+    const pendingObituaries = obituaryStatusCounts.pending || 0;
+    const approvedObituaries = obituaryStatusCounts.approved || 0;
+    const rejectedObituaries = obituaryStatusCounts.rejected || 0;
+    const draftObituaries = obituaryStatusCounts.draft || 0;
+
+    console.log("Calculated obituary stats:", {
+      totalObituaries,
+      publishedObituaries,
+      pendingObituaries,
+      approvedObituaries,
+      rejectedObituaries,
+      draftObituaries,
+    });
+
+    // Fetch tributes statistics (comments on user's obituaries)
+    const userObituaryIds = allUserObituaries.map((obit) => obit._id);
+    console.log("User obituary IDs for tributes:", userObituaryIds);
+
+    const totalTributes = await Comment.countDocuments({
+      tributeId: { $in: userObituaryIds },
+    });
+
+    const recentTributes = await Comment.countDocuments({
+      tributeId: { $in: userObituaryIds },
+      createdAt: { $gte: oneWeekAgo },
+    });
+
+    console.log("Tributes count:", { totalTributes, recentTributes });
+
+    // Fetch legacy orders statistics
+    const totalLegacyOrders = await LegacyOrder.countDocuments({
+      userId: userId,
+    });
+    const completedLegacyOrders = await LegacyOrder.countDocuments({
+      userId: userId,
+      status: "completed",
+    });
+
+    console.log("Legacy orders count:", {
+      totalLegacyOrders,
+      completedLegacyOrders,
+    });
+
+    // Fetch recent obituaries with proper field selection
+    const recentObituaries = await Tribute.find({ userId: userId })
       .sort({ createdAt: -1 })
+      .limit(3)
+      .select(
+        "fullName mainPortrait status createdAt dateOfBirth dateOfDeath epitaph publisher familyTree memorialServices burialServices"
+      )
       .lean();
 
-    // Get tributes received on user's obituaries
-    const obituaryIds = obituaries.map((o) => o._id);
-    const tributesReceived = await Comment.find({
-      tributeId: { $in: obituaryIds },
-      type: "tribute",
+    console.log("Recent obituaries count:", recentObituaries.length);
+
+    // Fetch recent tributes (comments on user's obituaries)
+    const recentTributesData = await Comment.find({
+      tributeId: { $in: userObituaryIds },
     })
-      .populate("tributeId", "name")
+      .populate("tributeId", "fullName mainPortrait")
       .sort({ createdAt: -1 })
+      .limit(3)
+      .select("authorName authorRelationship content createdAt tributeId")
       .lean();
 
-    // Get user's legacy orders
-    const legacyOrders = await LegacyOrder.find({ userId: user._id })
+    console.log("Recent tributes data count:", recentTributesData.length);
+
+    // Fetch recent legacy orders
+    const recentLegacyOrders = await LegacyOrder.find({ userId: userId })
       .sort({ createdAt: -1 })
+      .limit(3)
+      .select("packageType status totalAmount createdAt")
       .lean();
 
-    // Calculate statistics
     const stats = {
-      totalObituaries: obituaries.length,
-      publishedObituaries: obituaries.filter((o) => o.status === "published")
-        .length,
-      approvedObituaries: obituaries.filter((o) => o.status === "approved")
-        .length,
-      memorializedObituaries: obituaries.filter(
-        (o) => o.status === "memorialized"
-      ).length,
-      pendingObituaries: obituaries.filter((o) => o.status === "pending")
-        .length,
-      rejectedObituaries: obituaries.filter((o) => o.status === "rejected")
-        .length,
-      totalTributesReceived: tributesReceived.length,
-      legacyOrders: legacyOrders.length,
-      completedLegacyOrders: legacyOrders.filter(
-        (o) => o.status === "completed"
-      ).length,
+      totalObituaries,
+      publishedObituaries,
+      pendingObituaries,
+      approvedObituaries,
+      rejectedObituaries,
+      draftObituaries,
+      totalTributes,
+      recentTributes,
+      totalLegacyOrders,
+      completedLegacyOrders,
     };
 
-    // Get recent activity (last 30 days)
-    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    const recentTributes = tributesReceived.filter(
-      (t) => new Date(t.createdAt) > thirtyDaysAgo
-    );
+    console.log("Final stats being returned:", stats);
 
     return NextResponse.json({
       success: true,
-      data: {
-        obituaries,
-        tributesReceived,
-        legacyOrders,
-        stats,
-        recentTributes,
-      },
+      stats,
+      recentObituaries,
+      recentTributes: recentTributesData,
+      recentLegacyOrders,
     });
   } catch (error) {
     console.error("Dashboard API error:", error);
