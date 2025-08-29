@@ -41,11 +41,8 @@ export function SiteFooter() {
               <Link href="/about" className="block hover:text-primary">
                 About
               </Link>
-              <Link href="/directory" className="block hover:text-primary">
+              <Link href="/services" className="block hover:text-primary">
                 Services
-              </Link>
-              <Link href="/faq" className="block hover:text-primary">
-                Publishing
               </Link>
               <Link href="/privacy" className="block hover:text-primary">
                 Privacy Policy
