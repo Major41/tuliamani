@@ -37,16 +37,16 @@ export default function HomePage() {
               <div className="space-y-4">
                 <Badge variant="secondary" className="w-fit">
                   <Heart className="w-3 h-3 mr-1" />
-                  Preserving Memories
+                  Celebrate life by sharing memories.
                 </Badge>
                 <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
-                  Honor Lives,{" "}
-                  <span className="text-primary">Preserve Legacies</span>
+                  Your Digital Sanctuary{" "}
+                  <span className="text-primary">for Remembrance</span>
                 </h1>
                 <p className="text-xl text-muted-foreground max-w-lg">
-                  Create beautiful digital memorials and obituaries. Share
-                  memories, collect tributes, and keep legacies alive for
-                  generations to come.
+                  Create a lasting memorial to celebrate your loved one. Share
+                  memories and gather tributes to preserve their legacy, and
+                  begin healing together.
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
@@ -100,8 +100,9 @@ export default function HomePage() {
               Everything You Need to Honor a Life
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Our platform provides all the tools to create meaningful memorials
-              and preserve precious memories.
+              Tuliamani provides the tools and support to create meaningful
+              memorials, share important updates, and preserve treasured
+              memories that last.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -114,8 +115,8 @@ export default function HomePage() {
               </CardHeader>
               <CardContent className="text-center">
                 <CardDescription>
-                  Share important announcements and updates with family and
-                  friends.
+                  Share death and funeral announcements with ease, keeping
+                  family and friends informed with a respectful obituary.
                 </CardDescription>
               </CardContent>
             </Card>
@@ -128,7 +129,8 @@ export default function HomePage() {
               </CardHeader>
               <CardContent className="text-center">
                 <CardDescription>
-                  Allow friends and family to share memories and condolences.
+                  Invite friends and family to share memories, heartfelt stories
+                  and condolences, creating a rich legacy of love.
                 </CardDescription>
               </CardContent>
             </Card>
@@ -141,7 +143,8 @@ export default function HomePage() {
               </CardHeader>
               <CardContent className="text-center">
                 <CardDescription>
-                  Create beautiful printed books to preserve memories forever.
+                  Create a beautifully designed legacy book that captures your
+                  loved one’s essence, preserving their story for generations.
                 </CardDescription>
               </CardContent>
             </Card>
@@ -150,12 +153,12 @@ export default function HomePage() {
                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Images className="w-6 h-6 text-primary" />
                 </div>
-                <CardTitle className="text-lg">Annual Memories</CardTitle>
+                <CardTitle className="text-lg">Lasting Memorials</CardTitle>
               </CardHeader>
               <CardContent className="text-center">
                 <CardDescription>
-                  Create a space for annual memories and reflections to honor
-                  your loved ones.
+                  Build a peaceful memorial space filled with photos, tributes
+                  and reflections, a place to return to, honour and remember.
                 </CardDescription>
               </CardContent>
             </Card>
@@ -164,46 +167,241 @@ export default function HomePage() {
       </section>
 
       {/* How It Works */}
-      <section className="py-20">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold">
-              How Tuliamani Works
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* <!-- Header --> */}
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+              How Publishing on Tuliamani Works
             </h2>
-            <p className="text-xl text-muted-foreground">
-              Creating a memorial is simple and meaningful
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              It is easy to create and publish an obituary or memorial. An
+              obituary is for families actively planning a funeral or burial
+              while a memorial is for families and friends honouring a loved one
+              already laid to rest.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-white text-2xl font-bold">
+
+          {/* <!-- Process Steps --> */}
+          <div className="grid md:grid-cols-3 gap-8 mb-16">
+            {/* <!-- Step 1 --> */}
+            <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+              <div className="w-16 h-16 bg-teal-600 rounded-full flex items-center justify-center mx-auto text-white text-2xl font-bold mb-4">
                 1
               </div>
-              <h3 className="text-xl font-semibold">Create Your Tribute</h3>
-              <p className="text-muted-foreground">
-                Share the story, upload photos, and add funeral details in our
-                easy-to-use form.
+              <h3 className="text-xl font-semibold text-gray-800 text-center mb-3">
+                Create
+              </h3>
+              <p className="text-gray-600 text-center">
+                Write the obituary or memorial story, add photos, family tree
+                and funeral details for the obituary.
               </p>
             </div>
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-white text-2xl font-bold">
+
+            {/* <!-- Step 2 --> */}
+            <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+              <div className="w-16 h-16 bg-teal-600 rounded-full flex items-center justify-center mx-auto text-white text-2xl font-bold mb-4">
                 2
               </div>
-              <h3 className="text-xl font-semibold">Admin Review</h3>
-              <p className="text-muted-foreground">
-                Our team reviews and publishes your tribute with care and
-                respect.
+              <h3 className="text-xl font-semibold text-gray-800 text-center mb-3">
+                Review
+              </h3>
+              <p className="text-gray-600 text-center">
+                We ensure your obituary or memorial is published with care,
+                respect and sensitivity.
               </p>
             </div>
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-white text-2xl font-bold">
+
+            {/* <!-- Step 3 --> */}
+            <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+              <div className="w-16 h-16 bg-teal-600 rounded-full flex items-center justify-center mx-auto text-white text-2xl font-bold mb-4">
                 3
               </div>
-              <h3 className="text-xl font-semibold">Share & Preserve</h3>
-              <p className="text-muted-foreground">
-                Invite others to contribute memories and preserve the legacy
-                forever.
+              <h3 className="text-xl font-semibold text-gray-800 text-center mb-3">
+                Share
+              </h3>
+              <p className="text-gray-600 text-center">
+                Invite family and friends to add stories, reflections and give
+                tributes to preserve the legacy.
               </p>
+            </div>
+          </div>
+
+          {/* <!-- Explanation Cards --> */}
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* <!-- Obituaries Card --> */}
+            <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-teal-600">
+              <div className="flex items-center mb-4">
+                <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center mr-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 text-teal-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-800">
+                  Obituaries
+                </h3>
+              </div>
+              <p className="text-gray-600 mb-3 italic">
+                For families actively planning a funeral or burial.
+              </p>
+              <ul className="text-gray-600 space-y-2">
+                <li className="flex items-start">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 text-teal-600 mr-2 mt-0.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span>
+                    Write the obituary, add funeral details including program
+                    and streaming links
+                  </span>
+                </li>
+                <li className="flex items-start">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 text-teal-600 mr-2 mt-0.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span>Upload photos, eulogy, and family tree</span>
+                </li>
+                <li className="flex items-start">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 text-teal-600 mr-2 mt-0.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span>
+                    Keep friends and family updated, invite tributes, and gather
+                    support
+                  </span>
+                </li>
+              </ul>
+            </div>
+
+            {/* <!-- Memorials Card --> */}
+            <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-amber-500">
+              <div className="flex items-center mb-4">
+                <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center mr-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 text-amber-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905a3.61 3.61 0 01-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-800">
+                  Memorials
+                </h3>
+              </div>
+              <p className="text-gray-600 mb-3 italic">
+                For families and friends honouring a loved one already laid to
+                rest.
+              </p>
+              <ul className="text-gray-600 space-y-2">
+                <li className="flex items-start">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 text-amber-600 mr-2 mt-0.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span>
+                    Share their memorial story, upload photos, family tree and
+                    the eulogy
+                  </span>
+                </li>
+                <li className="flex items-start">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 text-amber-600 mr-2 mt-0.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span>Capture cherished memories and moments</span>
+                </li>
+                <li className="flex items-start">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 text-amber-600 mr-2 mt-0.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span>
+                    Gather more tributes, reflections, and stories to preserve
+                    their legacy
+                  </span>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -218,9 +416,10 @@ export default function HomePage() {
                 Funeral Service Directory
               </h2>
               <p className="text-lg text-muted-foreground">
-                Find trusted funeral service providers in your area. From
-                funeral homes to flowers, we connect you with verified
-                professionals during difficult times.
+                Find trusted funeral service providers to support you during
+                life’s most difficult moments. From funeral homes to floral
+                arrangements, Tuliamani helps connect you with providers who can
+                meet your needs.
               </p>
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex items-center gap-2">
@@ -240,7 +439,7 @@ export default function HomePage() {
                   <span className="text-sm">Live Streaming</span>
                 </div>
               </div>
-              <Link href="/services">
+              <Link href="/directory">
                 <Button>Browse Services</Button>
               </Link>
             </div>
@@ -326,11 +525,13 @@ export default function HomePage() {
             Start Preserving Memories Today
           </h2>
           <p className="text-xl opacity-90 max-w-2xl mx-auto">
-            Join thousands of families who trust Tuliamani to honor their loved
-            ones and preserve their legacies.
+            Honour your loved one’s journey with a timeless tribute to celebrate
+            a life beautifully lived. . Create a Digital Memorial for online
+            remembrances, or a Legacy Book to pass down their story for
+            generations.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/services">
+            <Link href="/directory">
               <Button
                 size="lg"
                 variant="secondary"

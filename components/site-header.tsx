@@ -24,10 +24,10 @@ export function SiteHeader() {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6">
           <Link
-            href="/memorials"
+            href="/about"
             className="text-sm font-medium hover:text-primary transition-colors"
           >
-            Memorials
+            About
           </Link>
           <Link
             href="/services"
@@ -36,16 +36,23 @@ export function SiteHeader() {
             Services
           </Link>
           <Link
+            href="/memorials"
+            className="text-sm font-medium hover:text-primary transition-colors"
+          >
+            Memorials
+          </Link>
+          <Link
+            href="/directory"
+            className="text-sm font-medium hover:text-primary transition-colors"
+          >
+            Directories
+          </Link>
+
+          <Link
             href="/blog"
             className="text-sm font-medium hover:text-primary transition-colors"
           >
             Blog
-          </Link>
-          <Link
-            href="/about"
-            className="text-sm font-medium hover:text-primary transition-colors"
-          >
-            About
           </Link>
         </nav>
 
@@ -78,11 +85,11 @@ export function SiteHeader() {
         <div className="md:hidden bg-background border-t">
           <div className="px-4 py-4 flex flex-col space-y-4">
             <Link
-              href="/memorials"
+              href="/about"
               className="text-sm font-medium hover:text-primary transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Memorials
+              About
             </Link>
             <Link
               href="/services"
@@ -92,19 +99,28 @@ export function SiteHeader() {
               Services
             </Link>
             <Link
+              href="/directory"
+              className="text-sm font-medium hover:text-primary transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Directories
+            </Link>
+            <Link
+              href="/memorials"
+              className="text-sm font-medium hover:text-primary transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Memorials
+            </Link>
+
+            <Link
               href="/blog"
               className="text-sm font-medium hover:text-primary transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               Blog
             </Link>
-            <Link
-              href="/about"
-              className="text-sm font-medium hover:text-primary transition-colors"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              About
-            </Link>
+
             <div className="flex gap-3 pt-2">
               <Link href="/login" className="w-full">
                 <Button variant="outline" size="sm" className="w-full">

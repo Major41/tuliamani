@@ -17,7 +17,8 @@ export function SiteFooter() {
               />
             </Link>
             <p className="text-sm text-muted-foreground mt-4">
-              Preserving memories and honoring lives with dignity and care.
+              Your digital sanctuary to preserve memories and honour the lives
+              of loved ones with dignity and care.
             </p>
           </div>
           <div className="space-y-4">
@@ -26,11 +27,11 @@ export function SiteFooter() {
               <Link href="/memorials" className="block hover:text-primary">
                 Memorials
               </Link>
-              <Link href="/services" className="block hover:text-primary">
-                Services
+              <Link href="/legacy" className="block hover:text-primary">
+                Legacy
               </Link>
               <Link href="/blog" className="block hover:text-primary">
-                Blog
+                Reflections
               </Link>
             </div>
           </div>
@@ -39,6 +40,18 @@ export function SiteFooter() {
             <div className="space-y-2 text-sm">
               <Link href="/about" className="block hover:text-primary">
                 About
+              </Link>
+              <Link href="/directory" className="block hover:text-primary">
+                Services
+              </Link>
+              <Link href="/faq" className="block hover:text-primary">
+                Publishing
+              </Link>
+              <Link href="/privacy" className="block hover:text-primary">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="block hover:text-primary">
+                Terms and Condition
               </Link>
             </div>
           </div>
@@ -60,7 +73,6 @@ export function SiteFooter() {
                   placeholder@gmail.com
                 </a>
               </div>
-             
             </div>
           </div>
         </div>

@@ -69,7 +69,7 @@ export default function SubmitServicePage() {
         }),
       });
       if (!res.ok) throw new Error(await res.text());
-      window.location.href = "/services";
+      window.location.href = "/directory";
     } catch (e: any) {
       alert(e.message);
     } finally {
@@ -85,6 +85,39 @@ export default function SubmitServicePage() {
         <p className="text-sm text-muted-foreground">
           KES 3,000/year. Admin will verify the Mpesa code.
         </p>
+
+        {/* Payment Instructions */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 my-6">
+          <h3 className="font-semibold text-blue-800 mb-2">
+            Payment Instructions
+          </h3>
+          <p className="text-sm text-blue-700 mb-3">
+            To complete your service listing, please make payment via M-Pesa
+            using the following steps:
+          </p>
+          <ol className="text-sm text-blue-700 list-decimal pl-5 space-y-1">
+            <li>Go to M-Pesa on your phone</li>
+            <li>
+              Select <strong>Lipa Na M-Pesa</strong>
+            </li>
+            <li>
+              Select <strong>Buy Goods and Services</strong>
+            </li>
+            <li>
+              Enter Till Number: <strong>781086</strong>
+            </li>
+            <li>
+              Enter Amount: <strong>3000</strong>
+            </li>
+            <li>Enter your M-Pesa PIN and confirm</li>
+            <li>Wait for the confirmation message</li>
+            <li>Enter the transaction code in the field below</li>
+          </ol>
+          <p className="text-xs text-blue-600 mt-3">
+            Your listing will be activated after we verify your payment.
+          </p>
+        </div>
+
         <form onSubmit={onSubmit} className="space-y-4 mt-6">
           <div>
             <label className="text-sm">Business Name</label>
@@ -137,14 +170,23 @@ export default function SubmitServicePage() {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <div>
-            <label className="text-sm">Mpesa Transaction Code</label>
+
+          <div className="bg-gray-50 p-4 rounded-lg border">
+            <label className="text-sm font-medium">
+              M-Pesa Transaction Code *
+            </label>
+            <p className="text-xs text-gray-500 mb-2">
+              Enter the transaction code from your M-Pesa payment confirmation
+              message
+            </p>
             <Input
               value={mpesaCode}
               onChange={(e) => setMpesaCode(e.target.value)}
+              placeholder="e.g., RF48H9J2K0"
               required
             />
           </div>
+
           <div>
             <label className="text-sm">Logo</label>
             <input

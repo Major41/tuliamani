@@ -394,7 +394,7 @@ export default function AdminDashboard() {
                   </span>
                 </div>
                 <div className="pt-2">
-                  <Link href="/admin/services">
+                  <Link href="/admin/directory">
                     <Button
                       variant="outline"
                       size="sm"
@@ -568,7 +568,7 @@ export default function AdminDashboard() {
               </Card>
             </Link>
 
-            <Link href="/admin/services">
+            <Link href="/admin/directory">
               <Card className="hover:shadow-md transition-shadow cursor-pointer">
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-base">

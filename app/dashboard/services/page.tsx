@@ -65,7 +65,7 @@ export default async function UserServicesPage({
               Find trusted funeral service providers for your needs
             </p>
           </div>
-          <Link href="/services/submit">
+          <Link href="/directory/submit">
             <Button variant="outline">
               <Building2 className="w-4 h-4 mr-2" />
               Submit Your Service
@@ -265,7 +265,7 @@ export default async function UserServicesPage({
               difficult times.
             </p>
             <div className="pt-2">
-              <Link href="/services/submit">
+              <Link href="/directory/submit">
                 <Button size="sm">
                   <Building2 className="w-3 h-3 mr-1" />
                   Submit Your Service
